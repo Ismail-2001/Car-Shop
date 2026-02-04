@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check, Calendar, Clock, Car, User, Mail, Phone, Loader2, ChevronDown } from 'lucide-react';
+import DatePicker from 'react-datepicker';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -9,7 +10,7 @@ interface BookingModalProps {
 
 interface FormData {
   service: string;
-  date: string;
+  date: Date | null;
   time: string;
   name: string;
   email: string;
@@ -19,7 +20,7 @@ interface FormData {
 
 const INITIAL_DATA: FormData = {
   service: '',
-  date: '',
+  date: null,
   time: '',
   name: '',
   email: '',
@@ -37,7 +38,7 @@ const SERVICES = [
 
 const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState<FormData>(INITIAL_DATA);
-  const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [errors, setErrors] = useState<Partial<{ [K in keyof FormData]: string }>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -52,7 +53,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
   }, [isOpen]);
 
   const validate = (): boolean => {
-    const newErrors: Partial<FormData> = {};
+    const newErrors: Partial<{ [K in keyof FormData]: string }> = {};
     if (!formData.service) newErrors.service = "Please select a service";
     if (!formData.date) newErrors.date = "Date is required";
     if (!formData.time) newErrors.time = "Time is required";
@@ -80,9 +81,15 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when user types
     if (errors[name as keyof FormData]) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const handleDateChange = (date: Date | null) => {
+    setFormData(prev => ({ ...prev, date }));
+    if (errors.date) {
+      setErrors(prev => ({ ...prev, date: undefined }));
     }
   };
 
@@ -163,15 +170,20 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-xs uppercase tracking-widest text-neutral-500 font-bold block">Preferred Date</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" size={16} />
-                        <input
-                          type="date"
-                          name="date"
-                          value={formData.date}
-                          onChange={handleChange}
-                          className={`w-full bg-black/50 border ${errors.date ? 'border-red-500' : 'border-white/10'} rounded-sm pl-12 pr-4 py-3 text-white focus:border-gold-500 outline-none transition-colors [color-scheme:dark]`}
-                        />
+                      <div className="relative group">
+                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 z-10 pointer-events-none" size={16} />
+                        <div className={`w-full bg-black/50 border ${errors.date ? 'border-red-500' : 'border-white/10'} rounded-sm focus-within:border-gold-500 transition-colors`}>
+                          <DatePicker
+                            selected={formData.date}
+                            onChange={handleDateChange}
+                            placeholderText="Select Date"
+                            minDate={new Date()}
+                            className="w-full bg-transparent pl-12 pr-4 py-3 text-white outline-none placeholder:text-neutral-500 cursor-pointer"
+                            dateFormat="MMMM d, yyyy"
+                            popperPlacement="bottom-start"
+                            showPopperArrow={false}
+                          />
+                        </div>
                       </div>
                       {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date}</p>}
                     </div>
