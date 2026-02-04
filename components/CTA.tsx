@@ -1,6 +1,10 @@
 import React from 'react';
 
-const CTA: React.FC = () => {
+interface CTAProps {
+  onBookClick: () => void;
+}
+
+const CTA: React.FC<CTAProps> = ({ onBookClick }) => {
   return (
     <section className="relative py-40 px-6 bg-neutral-900 text-center overflow-hidden">
         {/* Subtle texture overlay */}
@@ -16,7 +20,10 @@ const CTA: React.FC = () => {
           <p className="text-neutral-400 mb-12 text-lg">
             Experience the pinnacle of automotive care. Book your appointment today and let us transform your vehicle.
           </p>
-          <button className="px-12 py-5 bg-gold-600 text-black text-sm font-bold uppercase tracking-widest hover:bg-gold-500 transition-all shadow-[0_0_40px_-10px_rgba(202,138,4,0.3)] hover:shadow-[0_0_60px_-10px_rgba(202,138,4,0.5)] transform hover:-translate-y-1">
+          <button 
+            onClick={onBookClick}
+            className="px-12 py-5 bg-gold-600 text-black text-sm font-bold uppercase tracking-widest hover:bg-gold-500 transition-all shadow-[0_0_40px_-10px_rgba(202,138,4,0.3)] hover:shadow-[0_0_60px_-10px_rgba(202,138,4,0.5)] transform hover:-translate-y-1"
+          >
             Book Your Session
           </button>
         </div>

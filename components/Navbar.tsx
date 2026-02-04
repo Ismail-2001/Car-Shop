@@ -10,7 +10,11 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Membership', href: '#membership' },
 ];
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  onBookClick: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ onBookClick }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -45,7 +49,10 @@ const Navbar: React.FC = () => {
               <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold-400 transition-all duration-300 group-hover:w-full"></span>
             </a>
           ))}
-          <button className="bg-white text-black px-6 py-2 rounded-sm hover:bg-neutral-200 transition-colors font-medium text-xs tracking-widest uppercase">
+          <button 
+            onClick={onBookClick}
+            className="bg-white text-black px-6 py-2 rounded-sm hover:bg-neutral-200 transition-colors font-medium text-xs tracking-widest uppercase"
+          >
             Book Appointment
           </button>
         </div>
@@ -79,7 +86,13 @@ const Navbar: React.FC = () => {
                   {item.label}
                 </a>
               ))}
-              <button className="w-full bg-gold-500 text-black py-4 text-sm uppercase tracking-widest font-bold hover:bg-gold-400 transition-colors">
+              <button 
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onBookClick();
+                }}
+                className="w-full bg-gold-500 text-black py-4 text-sm uppercase tracking-widest font-bold hover:bg-gold-400 transition-colors"
+              >
                 Book Now
               </button>
             </div>
