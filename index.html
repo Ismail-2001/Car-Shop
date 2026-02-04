@@ -11,8 +11,8 @@
         theme: {
           extend: {
             fontFamily: {
-              serif: ['"Playfair Display"', 'serif'],
-              sans: ['"Manrope"', 'sans-serif'],
+              serif: ['var(--font-serif)', 'serif'],
+              sans: ['var(--font-sans)', 'sans-serif'],
             },
             colors: {
               obsidian: '#0a0a0a',
@@ -27,9 +27,14 @@
       }
     </script>
     <style>
+      :root {
+        --font-serif: "Playfair Display", serif;
+        --font-sans: "Manrope", sans-serif;
+      }
       body {
         background-color: #000;
         color: #e5e5e5;
+        font-family: var(--font-sans);
       }
     </style>
   <script type="importmap">
